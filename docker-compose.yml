@@ -1,0 +1,18 @@
+version: '3'
+services:
+  service1:
+    build:
+      context: .
+      args:
+        JAR_FILE: amazing-co-1.0-SNAPSHOT.jar
+    ports:
+      - "25555:8080"
+    restart: always
+  service2:
+    build:
+      context: .
+      args:
+        JAR_FILE: amazing-co-1.0-SNAPSHOT.jar
+    ports:
+      - "25556:8080"
+    restart: always
