@@ -1,0 +1,26 @@
+[
+  {
+    "id": "root",
+    "parent": "",
+    "root": "root",
+    "height": 0
+  },
+  {
+    "id": "a",
+    "parent": "root",
+    "root": "root",
+    "height": 1
+  },
+  {
+    "id": "b",
+    "parent": "root",
+    "root": "root",
+    "height": 1
+  },
+  {
+    "id": "c",
+    "parent": "a",
+    "root": "root",
+    "height": 2
+  }
+]
