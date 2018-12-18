@@ -36,7 +36,7 @@ public class OrganizationService {
             return result;
 
         } else {
-            return Collections.emptyList();
+            throw new NodeUnknownException();
         }
     }
 

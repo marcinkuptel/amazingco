@@ -22,5 +22,17 @@
     "parent": "a",
     "root": "root",
     "height": 2
+  },
+  {
+    "id": "d",
+    "parent": "a",
+    "root": "root",
+    "height": 2
+  },
+  {
+    "id": "e",
+    "parent": "c",
+    "root": "root",
+    "height": 3
   }
 ]
