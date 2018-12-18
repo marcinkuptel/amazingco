@@ -1,7 +1,7 @@
 package com.kuptel.Organization.Controllers;
 
 import com.kuptel.Organization.Model.Node;
-import com.kuptel.Organization.OrganizationDataSource;
+import com.kuptel.Organization.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,17 +15,16 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping(value="/v1/organization")
 public class OrganizationServiceController {
 
-    private OrganizationDataSource dataSource;
+    private OrganizationService organizationService;
 
     @Autowired
-    public OrganizationServiceController(OrganizationDataSource dataSource) {
-        this.dataSource = dataSource;
+    public OrganizationServiceController(OrganizationService organizationService) {
+        this.organizationService = organizationService;
     }
 
     @RequestMapping(value = "/{nodeId}", method = RequestMethod.GET)
-    public CompletableFuture<List<Node>> getChildren(@PathVariable("nodeId") String nodeId) {
-        CompletableFuture<List<Node>> structure = dataSource.getOrganizationStructure();
-        return structure;
+    public List<Node> getChildren(@PathVariable("nodeId") String nodeId) {
+        return organizationService.getDescendantsOfNode(nodeId);
     }
 
 }
