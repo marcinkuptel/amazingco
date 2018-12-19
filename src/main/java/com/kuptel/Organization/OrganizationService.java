@@ -2,6 +2,7 @@ package com.kuptel.Organization;
 
 import com.kuptel.Organization.Model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +17,7 @@ public class OrganizationService {
     private Map<String, Node> nodeRef;
 
     @Autowired
-    public OrganizationService(OrganizationDataSource dataSource) {
+    public OrganizationService(@Qualifier("sql-source") OrganizationDataSource dataSource) {
         this.dataSource = dataSource;
     }
 

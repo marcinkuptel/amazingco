@@ -1,6 +1,6 @@
 version: '3'
 services:
-  service1:
+  service:
     build:
       context: .
       args:
@@ -8,11 +8,11 @@ services:
     ports:
       - "25555:8080"
     restart: always
-  service2:
+    depends_on:
+      - postgres
+  postgres:
     build:
       context: .
-      args:
-        JAR_FILE: amazing-co-1.0-SNAPSHOT.jar
-    ports:
-      - "25556:8080"
+      dockerfile: postgres-dockerfile
+    container_name: postgres
     restart: always

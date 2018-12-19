@@ -1,0 +1,14 @@
+CREATE TABLE AMAZINGCO(
+  id VARCHAR(50) PRIMARY KEY,
+  parent VARCHAR(50) NOT NULL,
+  root VARCHAR(50) NOT NULL,
+  height smallint
+);
+
+INSERT INTO AMAZINGCO VALUES('root', '', 'root', 0);
+INSERT INTO AMAZINGCO VALUES('a', 'root', 'root', 1);
+INSERT INTO AMAZINGCO VALUES('b', 'root', 'root', 1);
+INSERT INTO AMAZINGCO VALUES('c', 'a', 'root', 2);
+INSERT INTO AMAZINGCO VALUES('d', 'a', 'root', 2);
+INSERT INTO AMAZINGCO VALUES('e', 'b', 'root', 2);
+INSERT INTO AMAZINGCO VALUES('f', 'b', 'root', 2);

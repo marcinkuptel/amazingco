@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service(value="json-source")
 public class OrganizationJSONDataSource implements OrganizationDataSource {
 
     private static String ORG_STRUCTURE_RESOURCE = "/org-structure.json";
