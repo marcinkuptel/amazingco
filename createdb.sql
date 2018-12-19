@@ -5,10 +5,4 @@ CREATE TABLE AMAZINGCO(
   height smallint
 );
 
-INSERT INTO AMAZINGCO VALUES('root', '', 'root', 0);
-INSERT INTO AMAZINGCO VALUES('a', 'root', 'root', 1);
-INSERT INTO AMAZINGCO VALUES('b', 'root', 'root', 1);
-INSERT INTO AMAZINGCO VALUES('c', 'a', 'root', 2);
-INSERT INTO AMAZINGCO VALUES('d', 'a', 'root', 2);
-INSERT INTO AMAZINGCO VALUES('e', 'b', 'root', 2);
-INSERT INTO AMAZINGCO VALUES('f', 'b', 'root', 2);
+COPY AMAZINGCO FROM '/db/data/db.csv' WITH (FORMAT csv);
