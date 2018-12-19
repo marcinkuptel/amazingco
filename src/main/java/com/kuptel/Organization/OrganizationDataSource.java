@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface OrganizationDataSource {
     List<Node> getOrganizationStructure();
+    boolean changeParentOfNode(String nodeId, String parentId);
 }

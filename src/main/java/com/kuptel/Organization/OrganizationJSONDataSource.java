@@ -36,4 +36,9 @@ public class OrganizationJSONDataSource implements OrganizationDataSource {
 
         return nodes;
     }
+
+    @Override
+    public boolean changeParentOfNode(String nodeId, String parentId) {
+        return false;
+    }
 }

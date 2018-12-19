@@ -42,14 +42,22 @@ public class OrganizationService {
     }
 
     public void changeParentOfNode(String nodeId, String newParentId) {
+
         Node node = nodeRef.get(nodeId);
         Node newParent = nodeRef.get(newParentId);
 
         if (node != null && newParent != null) {
-            Node currentParent = nodeRef.get(node.getParent());
-            currentParent.removeChild(node);
-            newParent.addChild(node);
-            node.setParent(newParentId);
+
+            boolean success = dataSource.changeParentOfNode(nodeId, newParentId);
+
+            if (success) {
+                Node currentParent = nodeRef.get(node.getParent());
+                currentParent.removeChild(node);
+                newParent.addChild(node);
+                node.setParent(newParentId);
+            } else {
+                throw new ParentUpdateFailedException();
+            }
         } else {
             throw new NodeUnknownException();
         }
