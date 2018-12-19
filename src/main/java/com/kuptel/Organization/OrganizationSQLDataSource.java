@@ -54,7 +54,11 @@ public class OrganizationSQLDataSource implements OrganizationDataSource {
                     "UPDATE amazingco set parent = ? WHERE ID = ?");
             st.setString(1, parentId);
             st.setString(2, nodeId);
-            return st.executeUpdate() == 1;
+
+            int updatedRows = st.executeUpdate();
+            st.close();
+
+            return  updatedRows == 1;
 
         } catch (SQLException e) {
             e.printStackTrace();
