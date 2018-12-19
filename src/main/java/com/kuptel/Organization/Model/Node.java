@@ -71,6 +71,10 @@ public class Node {
         return parent;
     }
 
+    public void setParent(String parentId) {
+        this.parent = parentId;
+    }
+
     public String getRoot() {
         return root;
     }

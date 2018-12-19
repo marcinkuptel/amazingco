@@ -5,10 +5,7 @@ import com.kuptel.Organization.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,9 +20,15 @@ public class OrganizationServiceController {
         this.organizationService = organizationService;
     }
 
-    @RequestMapping(value = "/{nodeId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{nodeId}/children", method = RequestMethod.GET)
     public ResponseEntity<List<Node>> getChildren(@PathVariable("nodeId") String nodeId) {
         List<Node> descendantsOfNode = organizationService.getDescendantsOfNode(nodeId);
         return new ResponseEntity<>(descendantsOfNode, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{nodeId}/parent", method = RequestMethod.POST)
+    public ResponseEntity changeParent(@PathVariable("nodeId") String nodeId, @RequestBody String newParentId) {
+        organizationService.changeParentOfNode(nodeId, newParentId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
