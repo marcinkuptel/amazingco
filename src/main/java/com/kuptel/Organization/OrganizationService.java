@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +30,7 @@ public class OrganizationService {
     @Autowired
     public OrganizationService(Repository dataSource) {
         this.dataSource = dataSource;
+        loadOrganizationStructure();
     }
 
     public List<Node> getDescendantsOfNode(String nodeId) {
@@ -110,7 +110,6 @@ public class OrganizationService {
         return heightUpdates;
     }
 
-    @PostConstruct
     private void loadOrganizationStructure() {
 
         writeLock.lock();
