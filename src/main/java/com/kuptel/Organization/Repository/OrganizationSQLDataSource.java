@@ -4,12 +4,9 @@ import com.kuptel.Organization.Model.Node;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
-@Service(value="sql-source")
+@Service
 public class OrganizationSQLDataSource implements OrganizationDataSource {
 
     private static String DB_URL = "jdbc:postgresql://postgres:5432/organization";
@@ -25,18 +22,16 @@ public class OrganizationSQLDataSource implements OrganizationDataSource {
     public List<Node> getOrganizationStructure() {
         List<Node> result = new ArrayList<>();
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, props)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, props);
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery("SELECT * FROM amazingco");) {
 
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM amazingco");
             while (rs.next()) {
                 result.add(new Node(rs.getString(1),
                                     rs.getString(2),
                                     rs.getString(3),
                                     rs.getInt(4)));
             }
-            rs.close();
-            st.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -46,19 +41,31 @@ public class OrganizationSQLDataSource implements OrganizationDataSource {
     }
 
     @Override
-    public RepositoryResponse changeParentOfNode(String nodeId, String parentId) {
+    public RepositoryResponse changeParentOfNode(String nodeId, String parentId, int newHeight,
+                                                 List<Map.Entry<String, Integer>> heightUpdates) {
 
-        try(Connection conn = DriverManager.getConnection(DB_URL, props)) {
+        try(Connection conn = DriverManager.getConnection(DB_URL, props);
+            PreparedStatement parentAndHeight =
+                    conn.prepareStatement("UPDATE amazingco set parent = ?, height = ? WHERE ID = ?");
+            PreparedStatement height =
+                    conn.prepareStatement("UPDATE amazingco set height = ? WHERE parent = ?")) {
 
-            PreparedStatement st = conn.prepareStatement(
-                    "UPDATE amazingco set parent = ? WHERE ID = ?");
-            st.setString(1, parentId);
-            st.setString(2, nodeId);
+            conn.setAutoCommit(false);
 
-            int updatedRows = st.executeUpdate();
-            st.close();
+            parentAndHeight.setString(1, parentId);
+            parentAndHeight.setInt(2, newHeight);
+            parentAndHeight.setString(3, nodeId);
+            parentAndHeight.executeUpdate();
 
-            return updatedRows == 1 ? RepositoryResponse.OK : RepositoryResponse.UPDATE_FAILED;
+            for(Map.Entry<String, Integer> entry : heightUpdates) {
+                height.setString(2, entry.getKey());
+                height.setInt(1, entry.getValue().intValue());
+                height.executeUpdate();
+            }
+
+            conn.commit();
+
+            return RepositoryResponse.OK;
 
         } catch (SQLException e) {
             e.printStackTrace();

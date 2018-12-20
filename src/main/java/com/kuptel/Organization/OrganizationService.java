@@ -6,11 +6,11 @@ import com.kuptel.Organization.Model.Node;
 import com.kuptel.Organization.Repository.OrganizationDataSource;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.Lock;
@@ -30,7 +30,7 @@ public class OrganizationService {
     private Map<String, Node> nodeRef;
 
     @Autowired
-    public OrganizationService(@Qualifier("sql-source") OrganizationDataSource dataSource) {
+    public OrganizationService(OrganizationDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -72,16 +72,17 @@ public class OrganizationService {
 
             if (node != null && newParent != null) {
 
-                RepositoryResponse response = dataSource.changeParentOfNode(nodeId, newParentId);
+                Node currentParent = nodeRef.get(node.getParent());
+                currentParent.removeChild(node);
+                newParent.addChild(node);
+                node.setParent(newParentId);
+                node.setHeight(newParent.getHeight() + 1);
+                List<Map.Entry<String, Integer>> heightUpdates = updateHeightsForChildNodes(node);
+
+                RepositoryResponse response = dataSource.changeParentOfNode(nodeId, newParentId,
+                        newParent.getHeight() + 1, heightUpdates);
 
                 if (response == RepositoryResponse.OK) {
-                    Node currentParent = nodeRef.get(node.getParent());
-                    currentParent.removeChild(node);
-                    newParent.addChild(node);
-                    node.setParent(newParentId);
-                    node.setHeight(newParent.getHeight() + 1);
-                    updateHeightsForChildNodes(node);
-
                     return CompletableFuture.completedFuture(response);
                 } else {
                     throw new ParentUpdateFailedException();
@@ -94,7 +95,8 @@ public class OrganizationService {
         }
     }
 
-    private void updateHeightsForChildNodes(Node startNode) {
+    private List<Map.Entry<String, Integer>> updateHeightsForChildNodes(Node startNode) {
+        List<Map.Entry<String, Integer>> heightUpdates = new ArrayList<>();
         Queue<Node> queue = new LinkedList<>();
         queue.add(startNode);
 
@@ -104,7 +106,9 @@ public class OrganizationService {
                 n.setHeight(node.getHeight() + 1);
             }
             queue.addAll(node.getChildren());
+            heightUpdates.add(new SimpleEntry<>(node.getId(), node.getHeight() + 1));
         }
+        return heightUpdates;
     }
 
     @PostConstruct

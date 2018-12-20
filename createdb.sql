@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 CREATE TABLE AMAZINGCO(
   id VARCHAR(50) PRIMARY KEY,
   parent VARCHAR(50) NOT NULL,

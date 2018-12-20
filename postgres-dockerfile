@@ -10,6 +10,6 @@ RUN apt-get install python -y
 RUN mkdir -p /db/data
 COPY generate-org.py /db
 
-RUN python /db/generate-org.py 10000 5 > /db/data/db.csv
+RUN python /db/generate-org.py 100000 5 > /db/data/db.csv
 
 ADD createdb.sql /docker-entrypoint-initdb.d/
