@@ -1,4 +1,4 @@
-package com.kuptel.Organization;
+package com.kuptel.Organization.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +38,7 @@ public class OrganizationJSONDataSource implements OrganizationDataSource {
     }
 
     @Override
-    public boolean changeParentOfNode(String nodeId, String parentId) {
-        return false;
+    public RepositoryResponse changeParentOfNode(String nodeId, String parentId) {
+        return RepositoryResponse.OK;
     }
 }

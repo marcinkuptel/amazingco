@@ -1,4 +1,4 @@
-package com.kuptel.Organization;
+package com.kuptel.Organization.Repository;
 
 import com.kuptel.Organization.Model.Node;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class OrganizationSQLDataSource implements OrganizationDataSource {
     }
 
     @Override
-    public boolean changeParentOfNode(String nodeId, String parentId) {
+    public RepositoryResponse changeParentOfNode(String nodeId, String parentId) {
 
         try(Connection conn = DriverManager.getConnection(DB_URL, props)) {
 
@@ -58,11 +58,11 @@ public class OrganizationSQLDataSource implements OrganizationDataSource {
             int updatedRows = st.executeUpdate();
             st.close();
 
-            return  updatedRows == 1;
+            return updatedRows == 1 ? RepositoryResponse.OK : RepositoryResponse.UPDATE_FAILED;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return RepositoryResponse.UPDATE_FAILED;
         }
     }
 }
