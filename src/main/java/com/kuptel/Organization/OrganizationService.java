@@ -2,8 +2,7 @@ package com.kuptel.Organization;
 
 import com.kuptel.Organization.Exceptions.NodeUnknownException;
 import com.kuptel.Organization.Exceptions.ParentUpdateFailedException;
-import com.kuptel.Organization.Model.Node;
-import com.kuptel.Organization.Repository.OrganizationDataSource;
+import com.kuptel.Organization.Repository.Repository;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -25,12 +24,12 @@ public class OrganizationService {
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
 
-    private OrganizationDataSource dataSource;
+    private Repository dataSource;
     private List<Node> nodes;
     private Map<String, Node> nodeRef;
 
     @Autowired
-    public OrganizationService(OrganizationDataSource dataSource) {
+    public OrganizationService(Repository dataSource) {
         this.dataSource = dataSource;
     }
 

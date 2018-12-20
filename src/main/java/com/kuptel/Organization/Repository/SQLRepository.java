@@ -1,13 +1,13 @@
 package com.kuptel.Organization.Repository;
 
-import com.kuptel.Organization.Model.Node;
+import com.kuptel.Organization.Node;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.*;
 
 @Service
-public class OrganizationSQLDataSource implements OrganizationDataSource {
+public class SQLRepository implements Repository {
 
     private static String DB_URL = "jdbc:postgresql://postgres:5432/organization";
     private static String USERNAME = "postgres";

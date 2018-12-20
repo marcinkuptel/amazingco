@@ -1,7 +1,5 @@
-package com.kuptel.Organization.Controllers;
+package com.kuptel.Organization;
 
-import com.kuptel.Organization.Model.Node;
-import com.kuptel.Organization.OrganizationService;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
@@ -15,13 +13,13 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/v1/organization")
-public class OrganizationServiceController {
+public class ServiceController {
 
     private OrganizationService organizationService;
     private TaskExecutor executor;
 
     @Autowired
-    public OrganizationServiceController(OrganizationService organizationService) {
+    public ServiceController(OrganizationService organizationService) {
         this.organizationService = organizationService;
         this.executor = new ThreadPoolTaskExecutor();
     }
