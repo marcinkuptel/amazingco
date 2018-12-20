@@ -70,7 +70,6 @@ public class Node {
     public String getParent() {
         return parent;
     }
-
     public void setParent(String parentId) {
         this.parent = parentId;
     }
@@ -82,4 +81,5 @@ public class Node {
     public int getHeight() {
         return height;
     }
+    public void setHeight(int height) { this.height = height; }
 }
