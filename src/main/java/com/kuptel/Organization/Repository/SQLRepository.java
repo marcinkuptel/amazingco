@@ -56,13 +56,13 @@ public class SQLRepository implements Repository {
 
             conn.setAutoCommit(false);
 
-            parentAndHeight.setString(1, parentId);
+            parentAndHeight.setObject(1, UUID.fromString(parentId));
             parentAndHeight.setInt(2, newHeight);
-            parentAndHeight.setString(3, nodeId);
+            parentAndHeight.setObject(3, UUID.fromString(nodeId));
             parentAndHeight.executeUpdate();
 
             for(Map.Entry<String, Integer> entry : heightUpdates) {
-                height.setString(2, entry.getKey());
+                height.setObject(2, UUID.fromString(entry.getKey()));
                 height.setInt(1, entry.getValue().intValue());
                 height.executeUpdate();
             }

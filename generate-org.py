@@ -24,7 +24,8 @@ except ValueError:
 db_format =  "INSERT INTO AMAZINGCO VALUES('%s', '%s', '%s', %i);"
 csv_format = "%s,%s,%s,%i"
 
-nodes = deque([("root", "null", "root", 0)])
+root_id = uuid.uuid4().hex
+nodes = deque([(root_id, "00000000000000000000000000000000", root_id, 0)])
 
 while total_nodes > 0:
 	current = nodes.popleft()
@@ -32,5 +33,5 @@ while total_nodes > 0:
 	total_nodes -= 1
 	for i in range(children_per_node):
 		id = uuid.uuid4()
-		node = (id.hex, current[0], "root", current[3] + 1)
+		node = (id.hex, current[0], root_id, current[3] + 1)
 		nodes.append(node)

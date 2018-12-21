@@ -70,8 +70,4 @@ Database username and password are hardcoded in [the code](src/main/java/com/kup
 * The whole tree structure is stored in memory to enable quick reads ([here](src/main/java/com/kuptel/Organization/Service/OrganizationService.java)). This could also cause problems if the data is large.
 * The tree structure in memory is a shared resource between the read operation (getting descendants of a node) and the write operation (changing the parent of a node). To avoid race conditions a read-write lock is used, which will affect the overall performance.
 * The complexity of getting all the descendants of node ´A´ is O(n), where n is the number of descendant of `A`.
-* The complexity of changing the parent of node `A` to node `B` is also O(n), where n is the number of descendants of node `A`. This comes from the fact that we have to update the height of every descendant. 
-
-## Potential improvements
-
-* Node ids are in the UUID format, but stored as strings in the database. It would be better to use the built-in UUID type.
+* The complexity of changing the parent of node `A` to node `B` is also O(n), where n is the number of descendants of node `A`. This comes from the fact that we have to update the height of every descendant.

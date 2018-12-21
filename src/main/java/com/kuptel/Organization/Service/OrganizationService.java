@@ -1,7 +1,6 @@
 package com.kuptel.Organization.Service;
 
 import com.kuptel.Organization.Exceptions.NodeUnknownException;
-import com.kuptel.Organization.Exceptions.ParentUpdateFailedException;
 import com.kuptel.Organization.Node;
 import com.kuptel.Organization.Repository.Repository;
 import com.kuptel.Organization.Repository.RepositoryResponse;
