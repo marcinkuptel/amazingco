@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class representing one node in the structure of Amazing Co.
+ */
 public class Node {
     private String id;
     private String parent;
@@ -26,6 +29,13 @@ public class Node {
         this.height = height;
     }
 
+    /**
+     * Create a parent-child connection between the current
+     * node and <i>child</i>.
+     *
+     * @param child Node to be added as the child of the current node.
+     * @return True if the node was added. False if it already exists.
+     */
     public boolean addChild(Node child) {
         if (children.contains(child)) {
             return false;
@@ -35,6 +45,13 @@ public class Node {
         }
     }
 
+    /**
+     * Remove <i>child</i> from the list of child nodes
+     * of the current node.
+     *
+     * @param child Node to be removed.
+     * @return True if node was removed. False if it does not exist.
+     */
     public boolean removeChild(Node child) {
         if (children.contains(child)) {
             children.remove(child);

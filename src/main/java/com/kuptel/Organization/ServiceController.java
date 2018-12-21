@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The only REST controller in the project, exposing two endpoints:
+ * 1) /v1/organization/{nodeId}/descendants - returns all descendants of node with id=<i>nodeId</i>.
+ * 2) /v1/organization/{nodeId}/parent - changes the parent of node with id=<i>nodeId</i> to the parent whose id
+ * is in the body of the request.
+ */
 @RestController
 @RequestMapping(value = "/v1/organization")
 public class ServiceController {
@@ -24,8 +30,8 @@ public class ServiceController {
         this.executor = new ThreadPoolTaskExecutor();
     }
 
-    @RequestMapping(value = "/{nodeId}/children", method = RequestMethod.GET)
-    public ResponseEntity<List<Node>> getChildren(@PathVariable("nodeId") String nodeId) {
+    @RequestMapping(value = "/{nodeId}/descendants", method = RequestMethod.GET)
+    public ResponseEntity<List<Node>> getDescendants(@PathVariable("nodeId") String nodeId) {
         List<Node> descendantsOfNode = organizationService.getDescendantsOfNode(nodeId);
         return new ResponseEntity<>(descendantsOfNode, HttpStatus.OK);
     }

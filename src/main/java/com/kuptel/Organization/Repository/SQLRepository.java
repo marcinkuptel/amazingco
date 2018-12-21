@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Concrete implementation of the <i>Repository</i> interface
+ * based on a PostgreSQL database.
+ */
 @Service
 public class SQLRepository implements Repository {
 
