@@ -3,6 +3,8 @@ package com.kuptel.Organization;
 import com.kuptel.Organization.Repository.Repository;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import com.kuptel.Organization.Repository.SQLRepository;
+import com.kuptel.Organization.Service.OrganizationService;
+import com.kuptel.Organization.Service.ServiceResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,10 +55,17 @@ public class OrganizationServiceTest {
         List<Node> descendantsOfA = organizationService.getDescendantsOfNode("a");
         assertEquals(Arrays.asList(orgStructure.get(3)), descendantsOfA);
 
-        RepositoryResponse response = organizationService.changeParentOfNode("b", "c").get();
-        assertEquals(RepositoryResponse.OK, response);
+        ServiceResponse response = organizationService.changeParentOfNode("b", "c").get();
+        assertEquals(ServiceResponse.OK, response);
 
         List<Node> newDescendantsOfA = organizationService.getDescendantsOfNode("a");
         assertEquals(Arrays.asList(orgStructure.get(3), orgStructure.get(2)), newDescendantsOfA);
+    }
+
+    @Test
+    public void changeParentOfNode_whenNewParentIsDescendant_returnViolationStatus()
+            throws ExecutionException, InterruptedException {
+        ServiceResponse response = organizationService.changeParentOfNode("a", "c").get();
+        assertEquals(ServiceResponse.ANCESTOR_VIOLATION, response);
     }
 }

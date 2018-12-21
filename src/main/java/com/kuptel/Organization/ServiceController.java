@@ -1,6 +1,11 @@
 package com.kuptel.Organization;
 
+import com.kuptel.Organization.Exceptions.AncestorViolationException;
+import com.kuptel.Organization.Exceptions.NodeUnknownException;
+import com.kuptel.Organization.Exceptions.ParentUpdateFailedException;
 import com.kuptel.Organization.Repository.RepositoryResponse;
+import com.kuptel.Organization.Service.OrganizationService;
+import com.kuptel.Organization.Service.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
@@ -36,14 +41,21 @@ public class ServiceController {
         return new ResponseEntity<>(descendantsOfNode, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{nodeId}/parent", method = RequestMethod.POST)
+    @RequestMapping(value = "/{nodeId}/parent/{parentId}", method = RequestMethod.POST)
     public CompletableFuture<ResponseEntity> changeParent(
             @PathVariable("nodeId") String nodeId,
-            @RequestBody String newParentId) {
+            @PathVariable("parentId") String newParentId) {
 
         return organizationService.changeParentOfNode(nodeId, newParentId)
-                .thenApply(response -> new ResponseEntity(response == RepositoryResponse.OK ?
-                        HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+                .thenApply(response -> {
+                    switch(response){
+                        case OK: return new ResponseEntity(HttpStatus.OK);
+                        case NODE_UNKNOWN: throw new NodeUnknownException();
+                        case PARENT_UPDATE_FAILED: throw new ParentUpdateFailedException();
+                        case ANCESTOR_VIOLATION: throw new AncestorViolationException();
+                        default: return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                });
 
     }
 }

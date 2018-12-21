@@ -1,7 +1,8 @@
-package com.kuptel.Organization;
+package com.kuptel.Organization.Service;
 
 import com.kuptel.Organization.Exceptions.NodeUnknownException;
 import com.kuptel.Organization.Exceptions.ParentUpdateFailedException;
+import com.kuptel.Organization.Node;
 import com.kuptel.Organization.Repository.Repository;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class OrganizationService {
      * @return Whether the operation was successful.
      */
     @Async("asyncExecutor")
-    public CompletableFuture<RepositoryResponse> changeParentOfNode(String nodeId, String newParentId) {
+    public CompletableFuture<ServiceResponse> changeParentOfNode(String nodeId, String newParentId) {
 
         writeLock.lock();
 
@@ -94,6 +95,10 @@ public class OrganizationService {
             Node newParent = nodeRef.get(newParentId);
 
             if (node != null && newParent != null) {
+
+                if (isAncestor(newParent, node)) {
+                    return CompletableFuture.completedFuture(ServiceResponse.ANCESTOR_VIOLATION);
+                }
 
                 Node currentParent = nodeRef.get(node.getParent());
                 currentParent.removeChild(node);
@@ -106,16 +111,33 @@ public class OrganizationService {
                         newParent.getHeight() + 1, heightUpdates);
 
                 if (response == RepositoryResponse.OK) {
-                    return CompletableFuture.completedFuture(response);
+                    return CompletableFuture.completedFuture(ServiceResponse.OK);
                 } else {
-                    throw new ParentUpdateFailedException();
+                    return CompletableFuture.completedFuture(ServiceResponse.PARENT_UPDATE_FAILED);
                 }
             } else {
-                throw new NodeUnknownException();
+                return CompletableFuture.completedFuture(ServiceResponse.NODE_UNKNOWN);
             }
         } finally {
             writeLock.unlock();
         }
+    }
+
+    /**
+     * Method to find out whether one node is an ancestor of another node.
+     * @param node Node which may be a descendant of <i>potentialAncestor</i>
+     * @param potentialAncestor Node which may potentially be an ancestor of <i>node</i>.
+     * @return True if there is an ancestor-descendant relationship. Otherwise false.
+     */
+    private boolean isAncestor(Node node, Node potentialAncestor) {
+        Node temp = node;
+
+        while(nodeRef.get(temp.getParent()) != null
+                && !temp.getId().equalsIgnoreCase(potentialAncestor.getId())) {
+            temp = nodeRef.get(temp.getParent());
+        }
+
+        return temp.getId().equalsIgnoreCase(potentialAncestor.getId());
     }
 
     /**
