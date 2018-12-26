@@ -5,12 +5,10 @@ import com.kuptel.Organization.Node;
 import com.kuptel.Organization.Repository.Repository;
 import com.kuptel.Organization.Repository.RepositoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -84,8 +82,7 @@ public class OrganizationService {
      * @param newParentId Id of the node which should be the new parent of node with id=<i>nodeId</i>.
      * @return Whether the operation was successful.
      */
-    @Async("asyncExecutor")
-    public CompletableFuture<ServiceResponse> changeParentOfNode(String nodeId, String newParentId) {
+    public ServiceResponse changeParentOfNode(String nodeId, String newParentId) {
 
         writeLock.lock();
 
@@ -96,7 +93,7 @@ public class OrganizationService {
             if (node != null && newParent != null) {
 
                 if (isAncestor(newParent, node)) {
-                    return CompletableFuture.completedFuture(ServiceResponse.ANCESTOR_VIOLATION);
+                    return ServiceResponse.ANCESTOR_VIOLATION;
                 }
 
                 Node currentParent = nodeRef.get(node.getParent());
@@ -110,12 +107,12 @@ public class OrganizationService {
                         newParent.getHeight() + 1, heightUpdates);
 
                 if (response == RepositoryResponse.OK) {
-                    return CompletableFuture.completedFuture(ServiceResponse.OK);
+                    return ServiceResponse.OK;
                 } else {
-                    return CompletableFuture.completedFuture(ServiceResponse.PARENT_UPDATE_FAILED);
+                    return ServiceResponse.PARENT_UPDATE_FAILED;
                 }
             } else {
-                return CompletableFuture.completedFuture(ServiceResponse.NODE_UNKNOWN);
+                return ServiceResponse.NODE_UNKNOWN;
             }
         } finally {
             writeLock.unlock();

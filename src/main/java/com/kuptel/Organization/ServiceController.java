@@ -4,18 +4,16 @@ import com.kuptel.Organization.Exceptions.AncestorViolationException;
 import com.kuptel.Organization.Exceptions.NodeUnknownException;
 import com.kuptel.Organization.Exceptions.ParentUpdateFailedException;
 import com.kuptel.Organization.Service.OrganizationService;
+import com.kuptel.Organization.Service.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * The only REST controller in the project, exposing two endpoints:
@@ -28,12 +26,10 @@ import java.util.concurrent.CompletableFuture;
 public class ServiceController {
 
     private OrganizationService organizationService;
-    private TaskExecutor executor;
 
     @Autowired
     public ServiceController(OrganizationService organizationService) {
         this.organizationService = organizationService;
-        this.executor = new ThreadPoolTaskExecutor();
     }
 
     @RequestMapping(value = "/{nodeId}/descendants", method = RequestMethod.GET)
@@ -43,20 +39,18 @@ public class ServiceController {
     }
 
     @RequestMapping(value = "/{nodeId}/parent/{parentId}", method = RequestMethod.POST)
-    public CompletableFuture<ResponseEntity> changeParent(
+    public ResponseEntity changeParent(
             @PathVariable("nodeId") String nodeId,
             @PathVariable("parentId") String newParentId) {
 
-        return organizationService.changeParentOfNode(nodeId, newParentId)
-                .thenApply(response -> {
-                    switch(response){
-                        case OK: return new ResponseEntity(HttpStatus.OK);
-                        case NODE_UNKNOWN: throw new NodeUnknownException();
-                        case PARENT_UPDATE_FAILED: throw new ParentUpdateFailedException();
-                        case ANCESTOR_VIOLATION: throw new AncestorViolationException();
-                        default: return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                });
+        ServiceResponse response = organizationService.changeParentOfNode(nodeId, newParentId);
 
+        switch(response){
+            case OK: return new ResponseEntity(HttpStatus.OK);
+            case NODE_UNKNOWN: throw new NodeUnknownException();
+            case PARENT_UPDATE_FAILED: throw new ParentUpdateFailedException();
+            case ANCESTOR_VIOLATION: throw new AncestorViolationException();
+            default: return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

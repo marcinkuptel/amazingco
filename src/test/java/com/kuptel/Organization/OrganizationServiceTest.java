@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,15 +46,14 @@ public class OrganizationServiceTest {
     }
 
     @Test
-    public void changeParentOfNode_whenValidNodesAreProvided_changeOrgStructureCorrectly()
-            throws ExecutionException, InterruptedException {
+    public void changeParentOfNode_whenValidNodesAreProvided_changeOrgStructureCorrectly() {
         when(repository.changeParentOfNode(eq("b"), eq("c"), eq(3), any()))
                 .thenReturn(RepositoryResponse.OK);
 
         List<Node> descendantsOfA = organizationService.getDescendantsOfNode("a");
         assertEquals(Arrays.asList(orgStructure.get(3)), descendantsOfA);
 
-        ServiceResponse response = organizationService.changeParentOfNode("b", "c").get();
+        ServiceResponse response = organizationService.changeParentOfNode("b", "c");
         assertEquals(ServiceResponse.OK, response);
 
         List<Node> newDescendantsOfA = organizationService.getDescendantsOfNode("a");
@@ -63,9 +61,8 @@ public class OrganizationServiceTest {
     }
 
     @Test
-    public void changeParentOfNode_whenNewParentIsDescendant_returnViolationStatus()
-            throws ExecutionException, InterruptedException {
-        ServiceResponse response = organizationService.changeParentOfNode("a", "c").get();
+    public void changeParentOfNode_whenNewParentIsDescendant_returnViolationStatus() {
+        ServiceResponse response = organizationService.changeParentOfNode("a", "c");
         assertEquals(ServiceResponse.ANCESTOR_VIOLATION, response);
     }
 }
